@@ -1,0 +1,21 @@
+# Test-only Loader composition: real DSH modules, no GUI shell or model adapter.
+- id: credentials
+  name: "@CREDENTIALS@"
+  config:
+    path: "@STORE@"
+    watch: false
+- id: authorization
+  name: "@AUTHORIZATION@"
+- id: webserver
+  name: "@WEBSERVER@"
+  config:
+    host: 127.0.0.1
+    port: 0
+- id: connection
+  name: "@CONNECTION@"
+- id: external-provider-fixture
+  name: "@PROVIDER@"
+- id: openai-web-auth
+  name: "@PLUGIN@"
+  config:
+    timeoutMs: 30000

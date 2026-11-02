@@ -1,0 +1,49 @@
+# ChatGPT sign-in for DSH
+
+A standalone, Web-only companion plugin developed for DSH `0.2.1-rc.3`. It adds **Sign in with ChatGPT** to the existing Codex provider card and uses DSH's registered OAuth flow. Other DSH versions are not blocked, but compatibility is not guaranteed; if sign-in fails, verify against the documented version. No copied OAuth implementation, terminal command, Agent turn, or DSH source modification is required.
+
+## Install, update, remove
+
+Run these commands from the DeepSeek Harness checkout that provides the `dsh` CLI. Replace `/absolute/path/to/dsh-openai-web-auth` with this plugin directory's absolute path; `link:` keeps the Web profile using this working copy.
+
+Install into the `web` profile:
+
+```sh
+dsh plugin --profile web add link:/absolute/path/to/dsh-openai-web-auth
+```
+
+For a checkout where the CLI is invoked through pnpm, use `pnpm dsh` instead of `dsh`:
+
+```sh
+pnpm dsh plugin --profile web add link:/absolute/path/to/dsh-openai-web-auth
+```
+
+To update a linked install after editing the source, no reinstall is needed; restart DSH so it reloads the bundle, then refresh the Web page. If the link points to a different directory, remove the old bundle and add the new link. To install a published package version instead, use its package spec (for example `@scope/package@version`) with `add`.
+
+Remove the bundle from the Web profile:
+
+```sh
+dsh plugin --profile web remove @local/dsh-openai-web-auth
+```
+
+If your CLI is invoked through pnpm, prefix each command with `pnpm` (e.g. `pnpm dsh plugin ...`). Removing the bundle does not revoke credentials already saved by DSH. Refresh the existing Web page if DSH requests it.
+
+## Use
+
+Open **Settings → Models**. Open the existing `openai-codex` provider card, or choose **Add model provider → Third-party model provider → openai-codex**. Click **Sign in with ChatGPT**. Choose browser or device-code login when the provider asks; open the displayed link and follow its instructions. The dialog supports device codes, pasted redirect URLs, text, secret, and selection questions. Credentials and OAuth exchanges remain on the Host.
+
+A successful result means DSH confirmed the credential was saved. Apply the provider settings separately if the provider has not been added, then select a model. Login alone does not verify model access. Device-code login must be enabled for the OpenAI account/workspace. A remote DSH Host cannot receive a callback sent to the browser machine's localhost; use the pasted redirect or device-code option offered by the provider.
+
+## Ownership and cancellation
+
+The plugin uses an authenticated Connection channel, accepts only the shared browser owner Peer, and scopes answers/cancellation to a random per-attempt capability held only by the initiating page. Other tabs cannot inspect or answer the attempt without that capability. One Codex login may run at a time.
+
+Cancel, Escape, or clicking outside the dialog requests cancellation; browser unload aborts an outstanding wait. An attempt expires after `timeoutMs` (default 600000, configurable on the `openai-web-auth` row). Connection loss reports an uncertain outcome, not success or rollback. DSH's authorization service may allow an already-started provider write to finish after cancellation; the plugin does not revoke credentials. Plugin unload cancels its attempt before releasing its RPC channel.
+
+Provider failures are reduced to safe error codes; raw exceptions and credential payloads are never sent to the browser. The latest eight notices are retained, with bounded message/link/code sizes. Answers are transient, bounded to 16384 characters, and never logged by the plugin. No login state enters the model context or Session log.
+
+## Development
+
+Runtime files are plain ESM on the Host and a DSH loader factory in the browser; no build or installation scripts are needed. DSH supplies the runtime peers (currently pinned to the versions listed in `package.json`). Run `node --test tests/*.test.js` for keyless interaction tests. Set `DSH_CHECKOUT=/path/to/built/deepseek-harness` on that command to include the real Loader/HTTP/disk-storage smoke and sibling-provider lifecycle regression; these tests use isolated temporary credentials and a fake authorization flow, never OpenAI. After editing an installed linked bundle, reload it through DSH and refresh the Web page; do not assume source-file changes are live.
+
+The icon is original artwork supplied with this plugin, not an OpenAI logo.

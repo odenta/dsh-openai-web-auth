@@ -1,0 +1,5 @@
+- insert:
+    - id: openai-web-auth
+      name: '@local/dsh-openai-web-auth'
+      config:
+        timeoutMs: 600000
