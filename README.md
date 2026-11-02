@@ -4,29 +4,28 @@ A standalone, Web-only companion plugin developed for DSH `0.2.1-rc.3`. It adds 
 
 ## Install, update, remove
 
-Run these commands from the DeepSeek Harness checkout that provides the `dsh` CLI. Replace `/absolute/path/to/dsh-openai-web-auth` with this plugin directory's absolute path; `link:` keeps the Web profile using this working copy.
+Use the GitHub repository directly. Run from a terminal where the `dsh` CLI is available:
 
 Install into the `web` profile:
 
 ```sh
-dsh plugin --profile web add link:/absolute/path/to/dsh-openai-web-auth
+dsh plugin --profile web add git+https://github.com/odenta/dsh-openai-web-auth.git
 ```
 
-For a checkout where the CLI is invoked through pnpm, use `pnpm dsh` instead of `dsh`:
+To update later, remove the installed bundle and add it again so DSH fetches the current repository contents:
 
 ```sh
-pnpm dsh plugin --profile web add link:/absolute/path/to/dsh-openai-web-auth
+dsh plugin --profile web remove @local/dsh-openai-web-auth
+dsh plugin --profile web add git+https://github.com/odenta/dsh-openai-web-auth.git
 ```
 
-To update a linked install after editing the source, no reinstall is needed; restart DSH so it reloads the bundle, then refresh the Web page. If the link points to a different directory, remove the old bundle and add the new link. To install a published package version instead, use its package spec (for example `@scope/package@version`) with `add`.
-
-Remove the bundle from the Web profile:
+To remove it:
 
 ```sh
 dsh plugin --profile web remove @local/dsh-openai-web-auth
 ```
 
-If your CLI is invoked through pnpm, prefix each command with `pnpm` (e.g. `pnpm dsh plugin ...`). Removing the bundle does not revoke credentials already saved by DSH. Refresh the existing Web page if DSH requests it.
+If you run DSH through pnpm from its checkout, prefix each command with `pnpm` (for example, `pnpm dsh plugin ...`). Restart DSH if the CLI reports that the profile requires it, then refresh the Web page. Removing the bundle does not revoke credentials already saved by DSH.
 
 ## Use
 
