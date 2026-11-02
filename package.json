@@ -5,9 +5,13 @@
   "type": "module",
   "description": "Sign in with ChatGPT for the existing DSH Codex provider.",
   "peerDependencies": {
-    "@deepseek-ai/cordis": "4.0.5",
-    "@deepseek-ai/schemastery": "3.18.5",
-    "@deepseek-ai/dsh-credentials": "0.2.1-rc.3"
+    "@deepseek-ai/cordis": "*",
+    "@deepseek-ai/schemastery": "*",
+    "@deepseek-ai/dsh-credentials": "*",
+    "@deepseek-ai/dsh-app-boot": "*"
+  },
+  "peerDependenciesMeta": {
+    "@deepseek-ai/dsh-app-boot": { "optional": true }
   },
   "exports": {
     ".": "./index.js",
@@ -16,7 +20,7 @@
     "./locale/*.json": "./locale/*.json",
     "./icon": "./icon.svg"
   },
-  "files": ["index.js", "auth.js", "client.js", "cordis.patch.yml", "locale/*.json", "icon.svg", "README.md"],
+  "files": ["index.js", "auth.js", "compatibility.js", "client.js", "cordis.patch.yml", "locale/*.json", "icon.svg", "README.md"],
   "scripts": { "test": "node --test tests/*.test.js" },
   "dsh": {
     "bundle": { "patch": "./cordis.patch.yml" },

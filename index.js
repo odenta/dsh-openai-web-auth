@@ -2,6 +2,7 @@
 import z from '@deepseek-ai/schemastery'
 import { credentialKey } from '@deepseek-ai/dsh-credentials'
 import { AuthFault, createAuthBridge } from './auth.js'
+import { warnVersionDrift } from './compatibility.js'
 
 export const name = 'openai-web-auth'
 export const inject = ['authorization', 'connection', 'webServer']
@@ -11,7 +12,8 @@ export const Config = z.object({
 })
 
 /** Register an authenticated browser-only channel; abort attempts before releasing its handlers. */
-export function apply(ctx, config) {
+export async function apply(ctx, config) {
+  await warnVersionDrift(ctx.logger)
   ctx.effect(() => {
     const bridge = createAuthBridge(ctx.authorization, credentialKey('llm-pi-ai', 'openai-codex'), config)
     const browserPeer = ctx.connection.browserPeer
